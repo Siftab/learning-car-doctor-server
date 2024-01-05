@@ -28,6 +28,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const carServices=client.db("car-doctor").collection("services");
+    const carBookings=client.db("car-doctor").collection("bookings");
 // get all service data 
 
     app.get('/services',async(req,res)=>{
@@ -49,6 +50,15 @@ app.get('/services/:id',async(req,res)=>{
   const result=await carServices.findOne(filter,options)
   res.send(result)
 })
+
+  // Bookings
+  app.post('/bookings', async(req,res)=>{
+    const newBooking = req.body;
+    // console.log(newBooking)
+    const result =await carBookings.insertOne(newBooking);
+    res.send(result)
+  })
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
