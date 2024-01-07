@@ -45,13 +45,24 @@ app.get('/services/:id',async(req,res)=>{
   const options = {
     
     // Include only the `title` and `imdb` fields in the returned document
-    projection: {  title: 1, price:1,description:1 },
+    projection: {  title: 1, price:1,description:1,img:1 },
   };
   const result=await carServices.findOne(filter,options)
   res.send(result)
 })
 
   // Bookings
+  app.get('/bookings',async(req,res)=>{
+   
+    let query={};
+    if(req.query?.email){
+      query={email: req.query.email}
+    }
+    const result = await carBookings.find(query).toArray();
+    res.send(result)
+  })
+
+
   app.post('/bookings', async(req,res)=>{
     const newBooking = req.body;
     // console.log(newBooking)
