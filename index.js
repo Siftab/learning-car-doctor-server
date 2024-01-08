@@ -61,7 +61,22 @@ app.get('/services/:id',async(req,res)=>{
     const result = await carBookings.find(query).toArray();
     res.send(result)
   })
-
+  
+  app.patch('/bookings/:id',async(req,res)=>{
+     const id=req.params.id;
+     const newdata = req.body;
+     const query= {
+      _id: new ObjectId(id)
+     }
+     const updatedInfo={
+      $set:{
+        status: newdata.status
+      }
+     }
+     const result=await carBookings.updateOne(query,updatedInfo)
+    // console.log(id ,newdata)
+    res.send(result)
+  })
   app.delete('/bookings/:id',async(req,res)=>{
     const id = req.params.id;
     const query = {
