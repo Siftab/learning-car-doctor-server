@@ -62,6 +62,15 @@ app.get('/services/:id',async(req,res)=>{
     res.send(result)
   })
 
+  app.delete('/bookings/:id',async(req,res)=>{
+    const id = req.params.id;
+    const query = {
+      _id: new ObjectId(id)
+    }
+    const result=await  carBookings.deleteOne(query)
+    res.send(result)
+  })
+
 
   app.post('/bookings', async(req,res)=>{
     const newBooking = req.body;
