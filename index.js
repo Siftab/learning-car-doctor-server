@@ -37,7 +37,7 @@ async function run() {
     app.post('/jwt',async(req,res)=>{
       const user = req.body;
       console.log(user)
-      const token= jwt.sign(user,'secret',{expiresIn:'1h'})
+      const token= jwt.sign(user,process.env.SECRET_TOKEN,{expiresIn:'1h'})
       res.send(token)
     })
 // get all service data 
