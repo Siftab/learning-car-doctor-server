@@ -38,7 +38,14 @@ async function run() {
       const user = req.body;
       console.log(user)
       const token= jwt.sign(user,process.env.SECRET_TOKEN,{expiresIn:'1h'})
-      res.send(token)
+      
+      res
+      .cookie('token',token,{
+        httpOnly:true,
+        secure:false
+        ,sameSite:'none'
+      })
+      .send({success:true})
     })
 // get all service data 
 

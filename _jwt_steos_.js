@@ -12,9 +12,13 @@
  * then  require("crypto").randomBytes(64).toString('hex')
  * you will get a string use it as token secret in .env file and access it as secret in your jwtSign in 
 */
+
 /***
  * how to store token in client site
  * memory--> ok type
  * local storage -->ok type(xss)
  * 3.cookies : http only 
  * /
+ 
+/**
+ *  1. set Cookies with httpOnly*/ 
