@@ -28,6 +28,30 @@ const client = new MongoClient(uri, {
   }
 });
 
+// custom middleWears
+const logger = async(req,res,next)=>{
+  console.log("called:",req.hostname, req.originalUrl)
+  next()
+}
+const verifyToken= async(req,res,next)=>{
+  const token= req.cookies.token
+  console.log("verify_token",token)
+  if(!token){
+    return res.send({message: "Not Authorized"})
+  }
+  console.log(typeof(token))
+//    jwt.verify(token,process.env.SECRET_TOKEN,(err,decoded)=>{
+//     if(err){
+//       console.log(err)
+//       return res.send({message:"unAuthorized"})
+//     }
+// console.log('value in token ',decoded)
+// next()
+//   })
+next()
+  
+}
+
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
@@ -38,7 +62,7 @@ async function run() {
 
 
     // Auth data
-    app.post('/jwt',async(req,res)=>{
+    app.post('/jwt',logger,async(req,res)=>{
       const user = req.body;
       console.log(user,process.env.SECRET_TOKEN)
       const token= jwt.sign(user,process.env.SECRET_TOKEN,{expiresIn:'1h'})
@@ -53,12 +77,12 @@ async function run() {
     })
 // get all service data 
 
-    app.get('/services',async(req,res)=>{
+    app.get('/services',logger,async(req,res)=>{
       const result =await carServices.find().toArray();
       res.send(result)
     })
 // get single services data
-app.get('/services/:id',async(req,res)=>{
+app.get('/services/:id',logger,async(req,res)=>{
   const id = req.params.id;
   const filter= {
     _id: new ObjectId(id)
@@ -74,8 +98,8 @@ app.get('/services/:id',async(req,res)=>{
 })
 
   // Bookings
-  app.get('/bookings',async(req,res)=>{
-    console.log('tokennnnn',req.cookies.token)
+  app.get('/bookings',logger,verifyToken,async(req,res)=>{
+    // console.log('tokennnnn',req.cookies.token)
    
     let query={};
     if(req.query?.email){
@@ -85,7 +109,7 @@ app.get('/services/:id',async(req,res)=>{
     res.send(result)
   })
   
-  app.patch('/bookings/:id',async(req,res)=>{
+  app.patch('/bookings/:id',logger,async(req,res)=>{
      const id=req.params.id;
      const newdata = req.body;
      const query= {
@@ -100,7 +124,7 @@ app.get('/services/:id',async(req,res)=>{
     // console.log(id ,newdata)
     res.send(result)
   })
-  app.delete('/bookings/:id',async(req,res)=>{
+  app.delete('/bookings/:id',logger,async(req,res)=>{
     const id = req.params.id;
     const query = {
       _id: new ObjectId(id)
@@ -110,7 +134,7 @@ app.get('/services/:id',async(req,res)=>{
   })
 
 
-  app.post('/bookings', async(req,res)=>{
+  app.post('/bookings',logger, async(req,res)=>{
     const newBooking = req.body;
     // console.log(newBooking)
     const result =await carBookings.insertOne(newBooking);
