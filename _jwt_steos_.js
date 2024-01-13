@@ -18,7 +18,32 @@
  * memory--> ok type
  * local storage -->ok type(xss)
  * 3.cookies : http only 
+ * 
+ *  1. set Cookies with httpOnly,seceure ,maxAge
+ * 2. response take send korte hobe 
+ *_____________________________________________
+ * install cookie-parser in backend
+ * COOKIE_PARSER_PART
+ * const cookieParser= require('cookie-parser')
+ * app.use(cookieParser())
+ * 
+ * 
+ * ________________________________
+ * CORS Origin part
+ * in app.use(cors())
+ * we need to set 
+ * 1. origin: ['http://localhost:5173/login']
+ * 2. credentials : true 
+ * ---------------
+ * final look
+ * app.use(cors({origin:['http://localhost:5173/login'],credentials : true}))
+ * 
+ * _______________________________________________________________________________
+ * FrontEnd=> Axios Part 
+ * add {
+ * withCredentials: true } after user in axios
+ * ______________________________________________
+ * verify part 
+ * 
+ * 
  * /
- 
-/**
- *  1. set Cookies with httpOnly*/ 
