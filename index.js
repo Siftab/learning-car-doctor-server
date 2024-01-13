@@ -40,15 +40,16 @@ const verifyToken= async(req,res,next)=>{
     return res.send({message: "Not Authorized"})
   }
   console.log(typeof(token))
-//    jwt.verify(token,process.env.SECRET_TOKEN,(err,decoded)=>{
-//     if(err){
-//       console.log(err)
-//       return res.send({message:"unAuthorized"})
-//     }
-// console.log('value in token ',decoded)
-// next()
-//   })
+   jwt.verify(token,process.env.SECRET_TOKEN,(err,decoded)=>{
+    if(err){
+      console.log(err)
+      return res.send({message:"unAuthorized"})
+    }
+console.log('value in token ',decoded)
+req.user=decoded
 next()
+  })
+// next()
   
 }
 
@@ -64,9 +65,9 @@ async function run() {
     // Auth data
     app.post('/jwt',logger,async(req,res)=>{
       const user = req.body;
-      console.log(user,process.env.SECRET_TOKEN)
+      // console.log(user,process.env.SECRET_TOKEN)
       const token= jwt.sign(user,process.env.SECRET_TOKEN,{expiresIn:'1h'})
-      
+      console.log(token)
       res
       .cookie('token',token,{
         httpOnly:true,
@@ -100,7 +101,9 @@ app.get('/services/:id',logger,async(req,res)=>{
   // Bookings
   app.get('/bookings',logger,verifyToken,async(req,res)=>{
     // console.log('tokennnnn',req.cookies.token)
-   
+   if(req.user.email!==req.query.email){
+    return res.send({massge: "forbidden access"})
+   }
     let query={};
     if(req.query?.email){
       query={email: req.query.email}
